@@ -1,5 +1,6 @@
-# Name,   Type, SubType, Offset,  Size,    Flags
-nvs,      data, nvs,     0x9000,  0x6000,
-phy_init, data, phy,     0xf000,  0x1000,
-factory,  app,  factory, 0x10000, 0x200000,
-data,     data, spiffs,  ,        0x1E0000,
+# Name,    Type, SubType, Offset,   Size,
+nvs,      data, nvs,     0x9000,   0x6000,
+phy_init, data, phy,     0xf000,   0x1000,
+factory,  app,  factory, 0x10000,  0x200000,
+sounds,   data, fat,     0x210000, 0xA0000,
+data,     data, spiffs,  0x2B0000, 0x150000,

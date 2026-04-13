@@ -1,11 +1,11 @@
 {
   "idf.currentSetup": "E:/Programs/esp-idf/",
   "idf.openOcdConfigs": [
-    "board/esp32s3-builtin.cfg"
+    "board/esp32c5-builtin.cfg"
   ],
   "idf.portWin": "COM4",
   "idf.customExtraVars": {
-    "IDF_TARGET": "esp32s3",
+    "IDF_TARGET": "esp32c5",
     "OPENOCD_USB_ADAPTER_LOCATION": "1-13.2"
   },
   "clangd.path": "E:\\Programs\\Espressif\\tools\\esp-clang\\esp-19.1.2_20250312\\esp-clang\\bin\\clangd.exe",
@@ -14,5 +14,5 @@
     "--query-driver=**",
     "--compile-commands-dir=d:\\Projects\\esp32-player\\build"
   ],
-  "idf.flashType": "UART"
+  "idf.flashType": "JTAG"
 }

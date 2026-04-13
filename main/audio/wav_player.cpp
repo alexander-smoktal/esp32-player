@@ -17,17 +17,6 @@ struct RiffHeader {
     char     wave[4];     // "WAVE"
 } __attribute__((packed));
 
-// fmt chunk (base)
-struct FmtChunk {
-    char     id[4];       // "fmt "
-    uint32_t size;        // usually 16 for PCM
-    uint16_t audio_format;
-    uint16_t num_channels;
-    uint32_t sample_rate;
-    uint32_t byte_rate;
-    uint16_t block_align;
-    uint16_t bits_per_sample;
-} __attribute__((packed));
 
 static constexpr int EXPECTED_SAMPLE_RATE = 44100;
 static constexpr int EXPECTED_BITS        = 16;
@@ -38,6 +27,28 @@ WavPlayer::WavPlayer(std::shared_ptr<FlashStorage> flash,
                      std::shared_ptr<AudioPlayer> audio)
     : m_flash(std::move(flash))
     , m_audio(std::move(audio)) {}
+
+bool WavPlayer::validate_fmt(const FmtChunk& fmt, const std::string& filename) const {
+    if (fmt.audio_format != 1) {
+        ESP_LOGE(TAG, "'%s': not PCM (format=%u)", filename.c_str(), fmt.audio_format);
+        return false;
+    }
+    if (fmt.sample_rate != EXPECTED_SAMPLE_RATE) {
+        ESP_LOGE(TAG, "'%s': sample rate %u (expected %d)",
+                 filename.c_str(), fmt.sample_rate, EXPECTED_SAMPLE_RATE);
+        return false;
+    }
+    if (fmt.bits_per_sample != EXPECTED_BITS) {
+        ESP_LOGE(TAG, "'%s': %u-bit (expected %d)",
+                 filename.c_str(), fmt.bits_per_sample, EXPECTED_BITS);
+        return false;
+    }
+    if (fmt.num_channels != EXPECTED_CHANNELS) {
+        ESP_LOGE(TAG, "'%s': %u channels (expected mono)", filename.c_str(), fmt.num_channels);
+        return false;
+    }
+    return true;
+}
 
 uint32_t WavPlayer::play(const std::string& filename) {
     auto file = m_flash->open_file(filename);
@@ -88,30 +99,7 @@ uint32_t WavPlayer::play(const std::string& filename) {
         return 0;
     }
 
-    // --- Validate format ---
-    if (fmt.audio_format != 1) {
-        ESP_LOGE(TAG, "'%s': not PCM (format=%u)",
-                 filename.c_str(), fmt.audio_format);
-        return 0;
-    }
-
-    if (fmt.sample_rate != EXPECTED_SAMPLE_RATE) {
-        ESP_LOGE(TAG, "'%s': sample rate %u (expected %d)",
-                 filename.c_str(), fmt.sample_rate, EXPECTED_SAMPLE_RATE);
-        return 0;
-    }
-
-    if (fmt.bits_per_sample != EXPECTED_BITS) {
-        ESP_LOGE(TAG, "'%s': %u-bit (expected %d)",
-                 filename.c_str(), fmt.bits_per_sample, EXPECTED_BITS);
-        return 0;
-    }
-
-    if (fmt.num_channels != EXPECTED_CHANNELS) {
-        ESP_LOGE(TAG, "'%s': %u channels (expected mono)",
-                 filename.c_str(), fmt.num_channels);
-        return 0;
-    }
+    if (!validate_fmt(fmt, filename)) return 0;
 
     // --- Find data chunk ---
     char chunk_id[4];

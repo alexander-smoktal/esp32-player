@@ -1,5 +1,6 @@
 set(SOURCES
     "main.cpp"
+    "nv_storage.cpp"
     "flash_storage.cpp"
     "audio/audio_buffer.cpp"
     "audio/audio_player.cpp"
@@ -11,7 +12,7 @@ include(${CMAKE_CURRENT_LIST_DIR}/states/States.cmake)
 
 idf_component_register(SRCS ${SOURCES}
                        INCLUDE_DIRS "."
-                       REQUIRES driver esp_ringbuf fatfs)
+                       REQUIRES driver esp_ringbuf fatfs bt nvs_flash)
 
 target_compile_features(${COMPONENT_LIB} PRIVATE cxx_std_23)
 

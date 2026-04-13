@@ -23,6 +23,19 @@ public:
     uint32_t play(const std::string& filename);
 
 private:
+    struct FmtChunk {
+        char     id[4];
+        uint32_t size;
+        uint16_t audio_format;
+        uint16_t num_channels;
+        uint32_t sample_rate;
+        uint32_t byte_rate;
+        uint16_t block_align;
+        uint16_t bits_per_sample;
+    } __attribute__((packed));
+
+    bool validate_fmt(const FmtChunk& fmt, const std::string& filename) const;
+
     std::shared_ptr<FlashStorage> m_flash;
     std::shared_ptr<AudioPlayer> m_audio;
 };

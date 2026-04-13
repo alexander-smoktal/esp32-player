@@ -10,10 +10,10 @@ PlayingAudioState::PlayingAudioState(std::shared_ptr<AudioPlayer> audio)
     : m_audio(std::move(audio)) {}
 
 bool PlayingAudioState::enter() {
-    ESP_LOGI(TAG, "enter — bluetooth audio passthrough active");
+    ESP_LOGI(TAG, "Enter — bluetooth audio passthrough active");
     return true;
 }
 
 void PlayingAudioState::exit() {
-    ESP_LOGI(TAG, "exit");
+    ESP_LOGI(TAG, "Exit");
 }

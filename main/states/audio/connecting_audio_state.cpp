@@ -10,7 +10,7 @@ ConnectingAudioState::ConnectingAudioState(std::shared_ptr<WavPlayer> wav_player
     : m_wav_player(std::move(wav_player)) {}
 
 bool ConnectingAudioState::enter() {
-    ESP_LOGI(TAG, "enter");
+    ESP_LOGI(TAG, "Enter");
     if (xTaskCreatePinnedToCore(play_task, "connecting_play", 3072, this, 4, &m_task, 1) != pdPASS) {
         ESP_LOGE(TAG, "Failed to create play task");
         return false;
@@ -19,7 +19,7 @@ bool ConnectingAudioState::enter() {
 }
 
 void ConnectingAudioState::exit() {
-    ESP_LOGI(TAG, "exit");
+    ESP_LOGI(TAG, "Exit");
     // Kill the play task first so it stops writing to the buffer
     if (m_task) {
         vTaskDelete(m_task);

@@ -10,10 +10,14 @@ PairingBtState::PairingBtState(std::shared_ptr<Bluetooth> bt)
     : m_bt(std::move(bt)) {}
 
 bool PairingBtState::enter() {
-    ESP_LOGI(TAG, "enter — bluetooth pairing mode");
+    ESP_LOGI(TAG, "Enter — bluetooth pairing mode");
+    m_bt->set_connect_callback([this]() { switch_to(StateId::Playing); });
+    m_bt->start_pairing();
     return true;
 }
 
 void PairingBtState::exit() {
-    ESP_LOGI(TAG, "exit");
+    ESP_LOGI(TAG, "Exit");
+    m_bt->stop_pairing();
+    m_bt->set_connect_callback(nullptr);
 }
